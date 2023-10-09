@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ $.Release.Name }}-agent-daemonset
+  namespace: {{ $.Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ $.Release.Name }}-agent
+  template:
+    metadata:
+      labels:
+        name:  {{ $.Release.Name }}-agent
+    spec:
+      containers:
+        - name: {{ $.Release.Name }}-agent
+          {{- if ne (((.Values.agent).healthCheck).enable) false }}
+          livenessProbe:
+            httpGet:
+              host: {{ default "localhost" (((.Values.agent).healthCheck).bindAddress) | quote }}
+              port: {{ default 80 (((.Values.agent).healthCheck).bindPort) }}
+              path: {{ default "/live" (((.Values.agent).healthCheck).livePath) | quote }}
+          readinessProbe:
+            httpGet:
+              host: {{ default "localhost" (((.Values.agent).healthCheck).bindAddress) | quote }}
+              port: {{ default 80 (((.Values.agent).healthCheck).bindPort) }}
+              path: {{ default "/ready" (((.Values.agent).healthCheck).readyPath) | quote }}
+          startupProbe:
+            httpGet:
+              host: {{ default "localhost" (((.Values.agent).healthCheck).bindAddress) | quote }}
+              port: {{ default 80 (((.Values.agent).healthCheck).bindPort) }}
+              path: {{ default "/ready" (((.Values.agent).healthCheck).readyPath) | quote }}
+         {{- end }}

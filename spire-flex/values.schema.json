@@ -1,0 +1,151 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://helm-flex.spire.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Helm Flex Schema",
+    "properties": {
+        "agent": {
+            "type": "object",
+            "default": {},
+            "title": "The .agent Schema",
+            "properties": {
+                "healthCheck": {
+                    "type": "object",
+                    "default": {},
+                    "title": "The .agent.healthCheck Schema",
+                    "properties": {
+                        "enable": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "The .agent.healtCheck.enable Schema",
+                            "examples": [
+                                true,
+                                false
+                            ]
+                        },
+                        "bindAddress": {
+                            "type": "string",
+                            "enum": [ "localhost", "0.0.0.0", "127.0.0.1", "::", "::1" ],
+                            "default": "localhost",
+                            "title": "The .agent.healtCheck.bindAddress Schema",
+                            "examples": [
+                                "localhost",
+                                "0.0.0.0",
+                                "127.0.0.1",
+                                "::",
+                                "::1"
+                            ]
+                        },
+                        "bindPort": {
+                            "type": "integer",
+                            "default": 80,
+                            "minimum": 1,
+                            "maximum": 65535,
+                            "title": "The .agent.healtCheck.bindPort Schema",
+                            "examples": [
+                                80,
+                                8080,
+                                9000
+                            ]
+                        },
+                        "livePath": {
+                            "type": "string",
+                            "default": "/live",
+                            "pattern": "^\/[-A-Za-z_0-9]+(/[-A-Za-z_0-9]+)*$",
+                            "title": "The .agent.healtCheck.livePath Schema",
+                            "examples": [
+                                "/live",
+                                "/i_am_alive"
+                            ]
+                        },
+                        "readyPath": {
+                            "type": "string",
+                            "default": "/ready",
+                            "pattern": "^\/[-A-Za-z_0-9]+(/[-A-Za-z_0-9]+)*$",
+                            "title": "The .agent.healthCheck.readyPath Schema",
+                            "examples": [
+                                "/ready",
+                                "/i_am_ready"
+                            ]
+                        }
+                    },
+                    "examples": [{
+                        "enable": false
+                    }, {
+                        "enable": true,
+                        "bindAddress": "localhost",
+                        "bindPort": 80,
+                        "livePath": "/live",
+                        "readyPath": "/ready"
+                    }, {
+                        "enable": true,
+                        "bindAddress": "::1",
+                        "bindPort": 9000,
+                        "livePath": "/live",
+                        "readyPath": "/ready"
+                    }]
+                }
+            },
+            "examples": [{
+                "healthCheck": { 
+                }
+            }, {
+                "healthCheck": {
+                    "enable": false
+                }
+            }, {
+                "healthCheck": {
+                    "enable": true,
+                    "bindAddress": "localhost",
+                    "bindPort": 80,
+                    "livePath": "/live",
+                    "readyPath": "/ready"
+                }
+            }, {
+                "healthCheck": {
+                    "enable": true,
+                    "bindAddress": "::1",
+                    "bindPort": 9000,
+                    "livePath": "/live",
+                    "readyPath": "/ready"
+                }
+            }]
+        }
+    },
+    "examples": [{
+        "agent": {
+        }
+    }, {
+        "agent": {
+            "healthCheck": {
+            }
+        }
+    }, {
+        "agent": {
+            "healthCheck": {
+                "enable": false
+            }
+        }
+    }, {
+        "agent": {
+            "healthCheck": {
+                "enable": true,
+                "bindAddress": "localhost",
+                "bindPort": 80,
+                "livePath": "/live",
+                "readyPath": "/ready"
+            }
+        }
+    }, {
+        "agent": {
+            "healthCheck": {
+                "enable": true,
+                "bindAddress": "::1",
+                "bindPort": 9000,
+                "livePath": "/live",
+                "readyPath": "/ready"
+            }
+        }
+    }]
+}

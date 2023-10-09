@@ -1,0 +1,18 @@
+suite: test .agent.healthCheck.bindAddress 192.168.0.23
+set:
+  Release.Name: devcluster
+templates:
+  - agent-configmap.yaml
+  - agent-daemonset.yaml
+tests:
+  - it: "Should fail to render as the IPv4 address is not 0.0.0.0 or localhost"
+    template: agent-configmap.yaml
+    set:
+      agent.healthCheck.bindAddress: "192.168.0.23"
+    asserts:
+      - failedTemplate:
+          errorMessage: | 
+            values don't meet the specifications of the schema(s) in the following chart(s):
+            spire-flex:
+            - agent.healthCheck.bindAddress: agent.healthCheck.bindAddress must be one of the following: "localhost", "0.0.0.0", "127.0.0.1", "::", "::1"
+

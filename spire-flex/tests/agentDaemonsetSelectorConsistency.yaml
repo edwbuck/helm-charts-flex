@@ -1,0 +1,34 @@
+suite: test .agent.healthCheck.enable true
+templates:
+  - agent-daemonset.yaml
+tests:
+  - it: "DaemonSet selector should match template elements"
+    template: agent-daemonset.yaml
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "DaemonSet"
+          name: "RELEASE-NAME-agent-daemonset"
+          namespace: "NAMESPACE"
+      - isNotNull:
+          path: spec
+      - isNotNull:
+          path: spec.selector
+      - isNotNull:
+          path: spec.selector.matchLabels
+      - isNotNull:
+          path: spec.selector.matchLabels.name
+      - equal:
+          path: spec.selector.matchLabels.name
+          value: "RELEASE-NAME-agent"
+      - isNotNull:
+          path: spec.template
+      - isNotNull:
+          path: spec.template.metadata
+      - isNotNull:
+          path: spec.template.metadata.labels
+      - isNotNull:
+          path: spec.template.metadata.labels.name
+      - equal:
+          path: spec.template.metadata.labels.name
+          value: "RELEASE-NAME-agent"

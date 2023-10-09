@@ -1,0 +1,36 @@
+After your server and agents are deployed, you may need to add entries to issue SIVDs.
+
+First capture the SPIRE server pod name within the deployment, here we capture the first pod name.
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "spire-flex.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+
+To list the SPIRE entries
+
+   kubectl --namespace {{ .Release.Namespace }} exec ${POD_NAME} -- \
+     /opt/spire/bin/spire-server entry list
+
+To add the SPIRE entry, the format is
+
+   kubectl --namespace {{ .Release.Namespace}} exec ${POD_NAME} -- \
+     /opt/spire/bin/spire-server entry create \
+       -spiffeID spiffe://trust-domain/workloadID \
+       -parentID spiffe://trust-domain/nodeID \
+       -selector FIRST_SELECTOR \
+       -selector SECOND_SELCTOR \
+       ... \
+       -selector LAST_SELECTOR
+
+And a specific example would be
+
+   kubectl --namespace {{ .Release.Namespace}} exec ${POD_NAME} -- \            
+     /opt/spire/bin/spire-server entry create \                                 
+       -spiffeID spiffe://trust-domain/workloadID \                             
+       -parentID spiffe://trust-domain/nodeID \                                 
+       -selector k8s:ns:eshop \
+       -selector k8s:pod-name:basket-api \
+       -selector k8s:pod-name:basket-api \
+       -selector k8s:sa:shopper
+
+Selectors for a SPIFFE ID are applied in an "and" fashion.  For a complete
+list of the available k8s selectors, see
+https://github.com/spiffe/spire/blob/main/doc/plugin_agent_workloadattestor_k8s.md.

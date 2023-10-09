@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-agent-config
+  namespace: {{ $.Release.Namespace }}
+data:
+  agent_config: |
+    agent {
+    }
+    
+    plugins {
+    }
+    {{ if ne (((.Values.agent).healthCheck).enable) false }}
+    health_checks {
+      listener_enabled = true
+      bind_address = {{ default "localhost" (((.Values.agent).healthCheck).bindAddress) | quote }}
+      bind_port = {{ default 80 (((.Values.agent).healthCheck).bindPort) }}
+      live_path = {{ default "/live" (((.Values.agent).healthCheck).livePath) | quote }}
+      ready_path = {{ default "/ready" (((.Values.agent).healthCheck).readyPath) | quote }}
+    }
+    {{- end }}
