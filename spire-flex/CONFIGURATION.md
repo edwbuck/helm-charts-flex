@@ -94,6 +94,23 @@ by specific component image controls.
 Agent configuration covers the agent installation and the configured behavior
 of the installed agent.  
 
+### Agent Bootstrapping
+
+Upon agent startup, the agent connects to the server instance through a service,
+initiating the agent/node attestation process.  This attesation process uses TLS,
+which requires the agent to trust the server.  The bootstrap trust bundle permits
+the agent to trust the server during the bootstrap process.
+
+| Path                            | Type   | Default | 
+| ------------------------------- | ------ | ------- |
+| agent.bootstrapTrustbundle.type | string | "none"  |
+| agent.bootstrapTrustbundle.url  | string |         |
+| agent.bootstrapTrustbundle.path | string |         |
+
+
+> Note: **agent.bootstrapTrustbundle.type** can only be set to one of "none",
+> "url", or "path".
+
 ### Agent Config File
 
 The agent config file contains the configuration elements passed to the agent

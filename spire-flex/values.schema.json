@@ -51,6 +51,42 @@
             "default": {},
             "title": "The .agent Schema",
             "properties": {
+                "bootstrapTrustbundle": {
+                    "type": "object",
+                    "default": {},
+                    "title": "The .agent.bootstrapTrustbundle Schema",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [ "none", "path", "url"],
+                            "default": "url",
+                            "title": "The .agent.bootstrapTrustbundle.type Schema",
+                            "examples": [
+                                "url",
+                                "path",
+                                "none"
+                            ]
+                        },
+                        "path": {
+                            "type": "string",
+                            "default": "/path/to/trust/bundle",
+                            "title": "The .agent.bootstrapTrustbundle.path Schema",
+                            "examples": [
+                                "/path/to/trust/bundle",
+                                "/other/path/to/trust/bundle"
+                            ]
+                        },
+                        "url": {
+                            "type": "string",
+                            "default": "http://something",
+                            "title": "The .agent.bootstrapTrustbundle.url Schema",
+                            "examples": [
+                                "http://trust.server.com/trustbundle",
+                                "http://trust.mycorp.com/"
+                            ]
+                        }
+                    }
+                },
                 "configFile": {
                     "type": "string",
                     "default": "/opt/spire/conf/agent/agent.conf",

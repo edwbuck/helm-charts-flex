@@ -27,6 +27,7 @@ tests:
               server_address = "RELEASE-NAME-server"
               server_port = 8081
               trust_domain = "dev.mycorp.com"
+              insecure_bootstrap = true
             }
 
             plugins {

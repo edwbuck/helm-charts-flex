@@ -19,6 +19,7 @@ tests:
               server_address = "RELEASE-NAME-server"
               server_port = 8081
               trust_domain = "prod.yoyodyne.com"
+              insecure_bootstrap = true
             }
             
             plugins {

@@ -7,6 +7,7 @@ tests:
     set:
       agent.keyManager.type: "memory"
       trustdomain: "dev.mycorp.com"
+      agent.bootstrapTrustbundle.type: "none"
     asserts:
       - containsDocument:
           apiVersion: "v1"
@@ -35,4 +36,5 @@ tests:
               live_path = "/live"
               ready_path = "/ready"
             }
+
 
