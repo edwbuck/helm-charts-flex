@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $.Release.Name }}-server-statefulset
+  namespace: {{ $.Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Release.Name }}-server
+  servicename: server
+  template:
+    metadata:
+      name: {{ $.Release.Name }}-server
+      namespace: {{ $.Release.Namespace }}
+      labels:
+        app: {{ $.Release.Name }}-server
+    spec:
+      containers:
+        - name: {{ $.Release.Name }}-server
+          image: {{ include "spire-flex.server.image" . }}
+          args:
+            - "-config"
+            - {{ default "/opt/spire/conf/server/server.conf" (.Values.server).configFile | quote }} 
+          volumeMounts:
+            - name: {{ $.Release.Name }}-server-config
+              mountPath: {{ printf "%s/" (dir (default "/opt/spire/conf/server/server.conf" ($.Values.server).configFile)) | quote }}
+              readOnly: true
+      volumes:
+        - name: {{ $.Release.Name }}-server-config
+          configMap:
+            name: {{ $.Release.Name }}-server-config

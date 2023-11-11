@@ -17,15 +17,6 @@ a prototype, set the **trustdomain** to 'prototype.department.company.com'.
 | ------------------ | ----------- | ----------------------- |
 | SPIRE Trust Domain | trustdomain | propulsion.yoyodyne.com |
 
-## Global Settings
-
-Some settings apply to the entire installation.  To clarify they are not a
-subcomponent of the agent or server, they are top-level settings.
-
-| Component          | Config Path | Example Values          | 
-| ------------------ | ----------- | ----------------------- |
-| SPIRE Trust Domain | trustdomain | propulsion.yoyodyne.com |
-
 ## Component Names
 
 Some components support renaming.  When renaming components, we highly recommend
@@ -42,10 +33,11 @@ in avoiding collisions when installing multiple SPIRE instances on the same
 hardware, or may place files into locations conforming with your file placement
 standards.  Below is a list of relocatable files and their default locations.
 
-| File                          | Config Path         | Default Location           | 
-| ----------------------------- | ------------------- | -------------------------- |
-| Agent Configuration File      | agent.configFile    | /opt/spire/conf/agent.conf |
-| Agent Keymanager Directory\*  | agent.keyManagerDir | /opt/spire/data/agent/     |
+| File                          | Config Path         | Default Location            | 
+| ----------------------------- | ------------------- | --------------------------- |
+| Agent Configuration File      | agent.configFile    | /opt/spire/conf/agent.conf  |
+| Agent Keymanager Directory\*  | agent.keyManagerDir | /opt/spire/data/agent/      |
+| Server Configuration File     | server.configFile   | /opt/spire/data/server.conf |
 
 > Note: Items marked with an asterisk (\*) are optional and will only be used
   when other configuration setttings activate them.
@@ -87,7 +79,6 @@ The values associated with global image controls include:
 These controls alter all image defaults, providing a convenient way to ensure
 all SPIRE components use the same set of images. These defauls can be overridden
 by specific component image controls.
-
 
 ## Agent Configuration
 
@@ -345,3 +336,36 @@ The values associated with the service settigns include:
 | server.serviceName       | string | { Release.Name }-server |
 | server.servicePort       | int    | 8081                    |
 
+
+### Agent Image Controls
+
+The agent is controlled by a container defintion which pulls the agent's image
+from a container repository. This image contains the spire-agent executable
+which connects to the spire-server through a procedure known as agent-attestation.
+
+The values associated with the agent image include:
+
+| Path                      | Type   | Defaults             |
+| ------------------------- | ------ | -------------------- |
+| server.image.name         | string | spire/spire-server   |
+| server.image.registry     | string | {image.registry}     |
+| server.image.registryPort | int    | {image.registryPort} |
+| server.image.tag          | string | {image.tag}          |
+
+> Note: These values default to other values.  If the other values are unset
+> consult thier default values to determine the final value.
+
+When settings are best applied to all images, consider setting them in the the
+[Image Configuration](image_configuration) section.
+
+Here is an example of a customized server image, where a test agent is being
+used with other non-test components.
+
+```yaml
+server:
+  image:
+    name: "mycorp/spire-test-server"
+    registry: "mycorp"
+    registryPort: 8080
+    tag: "latest"
+```

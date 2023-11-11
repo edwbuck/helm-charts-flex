@@ -5,47 +5,6 @@
     "default": {},
     "title": "Helm Flex Schema",
     "properties": {
-        "image": {
-            "type": "object",
-            "default": {},
-            "title": "The .image Schema",
-            "properties": {
-                "registry": {
-                    "type": "string",
-                    "title": "The .image.registry Schema",
-                    "examples": [
-                        "ghcr.io",
-                        "docker",
-                        "company"
-                    ]
-                },
-                "registryPort": {
-                    "type": "integer",
-                    "title": "The .image.registryPort Schema",
-                    "examples": [
-                        9203,
-                        10001
-                    ]
-                },
-                "tag": {
-                    "type": "string",
-                    "title": "The .image.tag Schema",
-                    "examples": [
-                        "latest",
-                        "1.8.0",
-                        "1.7.2"
-                    ]
-                }
-            }
-        },
-        "trustdomain": {
-            "type": "string",
-            "title": "The .trustdomain Schema",
-            "examples": [
-                "yoyodyne.com",
-                "dev.tyrellcorp.com"
-            ]
-        },
         "agent": {
             "type": "object",
             "default": {},
@@ -101,15 +60,6 @@
                     "default": {},
                     "title": "The .agent.healthCheck Schema",
                     "properties": {
-                        "enable": {
-                            "type": "boolean",
-                            "default": true,
-                            "title": "The .agent.healtCheck.enable Schema",
-                            "examples": [
-                                true,
-                                false
-                            ]
-                        },
                         "bindAddress": {
                             "type": "string",
                             "enum": [ "localhost", "0.0.0.0", "127.0.0.1", "::", "::1" ],
@@ -133,6 +83,15 @@
                                 80,
                                 8080,
                                 9000
+                            ]
+                        },
+                        "enable": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "The .agent.healtCheck.enable Schema",
+                            "examples": [
+                                true,
+                                false
                             ]
                         },
                         "livePath": {
@@ -220,47 +179,11 @@
                     "default": {},
                     "title": "The .agent.keyManager Schema",
                     "properties": {
-                        "type": {
-                            "type": "string",
-                            "enum": [ "custom", "disk", "memory" ],
-                            "default": "disk",
-                            "title": "The .agent.keyManager.type Schema",
-                            "examples": [
-                                "custom",
-                                "disk",
-                                "memory"
-                            ]
-                        },
-                        "disk": {
-                            "type": "object",
-                            "default": {},
-                            "title": "The .agent.keyManager.disk Schema",
-                            "properties": {
-                                "directory": {
-                                    "type": "string",
-                                    "default": "/opt/spire/data/agent/",
-                                    "title": "The .agent.keyManager.type.disk Schema",
-                                    "examples": [
-                                        "/opt/spire/data/agent/",
-                                        "/var/lib/spire-agent/"
-                                    ]
-                                }
-                            }
-                        },
                         "custom": {
                             "type": "object",
                             "default": {},
                             "title": "The .agent.keyManager.custom Schema",
                             "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "default": "customKeyManager",
-                                    "title": "The .agent.keyManager.custom.name Schema",
-                                    "examples": [
-                                        "customKeyManager",
-                                        "coprateKeyManager"
-                                    ]
-                                },
                                 "checksum": {
                                     "type": "string",
                                     "title": "The .agent.keyManager.custom.checksum Schema",
@@ -277,9 +200,15 @@
                                 },
                                 "data": {
                                     "type": "array",
+                                    "default": [ ],
                                     "title": "The .agent.keyManager.custom.data Schema",
+                                    "items": {
+                                        "type": "string"
+                                    },
                                     "examples": [
-                                        "/opt/spire/agent/plugins/customKeyManager"
+                                        "logging = true",
+                                        "delay = 32",
+                                        "name = \"item\""
                                     ]
                                 },
                                 "enabled": {
@@ -291,22 +220,78 @@
                                         false
                                     ]
                                 },
-                                "data": {
-                                    "type": "array",
-                                    "default": [ ],
-                                    "title": "The .agent.keyManager.custom.data Schema",
-                                    "items": {
-                                        "type": "string"
-                                    },
+                                "name": {
+                                    "type": "string",
+                                    "default": "customKeyManager",
+                                    "title": "The .agent.keyManager.custom.name Schema",
                                     "examples": [
-                                        "logging = true",
-                                        "delay = 32",
-                                        "name = \"item\""
+                                        "customKeyManager",
+                                        "coprateKeyManager"
                                     ]
                                 }
                             }
+                        },
+                        "disk": {
+                            "type": "object",
+                            "default": {},
+                            "title": "The .agent.keyManager.disk Schema",
+                            "properties": {
+                                "directory": {
+                                    "type": "string",
+                                    "default": "/opt/spire/data/agent/",
+                                    "title": "The .agent.keyManager.disk.directory Schema",
+                                    "examples": [
+                                        "/opt/spire/data/agent/",
+                                        "/var/lib/spire-agent/"
+                                    ]
+                                }
+                            }
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [ "custom", "disk", "memory" ],
+                            "default": "disk",
+                            "title": "The .agent.keyManager.type Schema",
+                            "examples": [
+                                "custom",
+                                "disk",
+                                "memory"
+                            ]
                         }
                     }
+                }
+            }
+        },
+        "image": {
+            "type": "object",
+            "default": {},
+            "title": "The .image Schema",
+            "properties": {
+                "registry": {
+                    "type": "string",
+                    "title": "The .image.registry Schema",
+                    "examples": [
+                        "ghcr.io",
+                        "docker",
+                        "company"
+                    ]
+                },
+                "registryPort": {
+                    "type": "integer",
+                    "title": "The .image.registryPort Schema",
+                    "examples": [
+                        9203,
+                        10001
+                    ]
+                },
+                "tag": {
+                    "type": "string",
+                    "title": "The .image.tag Schema",
+                    "examples": [
+                        "latest",
+                        "1.8.0",
+                        "1.7.2"
+                    ]
                 }
             }
         },
@@ -315,6 +300,58 @@
             "default": {},
             "title": "The .server Schema",
             "properties": {
+                "configFile": {
+                    "type": "string",
+                    "default": "/opt/spire/conf/agent/server.conf",
+                    "title": "The .server.configFile Schema",
+                    "examples": [
+                        "/run/spire/config/server.conf",
+                        "/etc/spire/server.conf"
+                    ]
+                },
+                "image": {
+                    "type": "object",
+                    "default": {},
+                    "title": "The .server.image Schema",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "title": "The .server.image.name Schema",
+                            "examples": [
+                                "spire/spire-server",
+                                "company/spire-server",
+                                "custom/server"
+                            ]
+                        },
+                        "registry": {
+                            "type": "string",
+                            "title": "The .server.image.registry Schema",
+                            "examples": [
+                                "ghcr.io",
+                                "docker",
+                                "company"
+                            ]
+                        },
+                        "registryPort": {
+                            "type": "integer",
+                            "title": "The .server.image.registryPort Schema",
+                            "examples": [
+                                9203,
+                                10001
+                            ]
+                        },
+                        "tag": {
+                            "type": "string",
+                            "title": "The .server.image.tag Schema",
+                            "examples": [
+                                "latest",
+                                "1.8.0",
+                                "1.7.2"
+                            ]
+
+                        }
+                    }
+                },
                 "serviceName": {
                     "type": "string",
                     "default": "RELEASE-NAME-server",
@@ -334,6 +371,14 @@
                     ]
                 }
             }
+        },
+        "trustdomain": {
+            "type": "string",
+            "title": "The .trustdomain Schema",
+            "examples": [
+                "yoyodyne.com",
+                "dev.tyrellcorp.com"
+            ]
         }
     }
 }

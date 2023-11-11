@@ -1,12 +1,12 @@
-suite: test agent with .agent.image.name docker
+suite: "test agent with .agent.image.tag \"latest\""
 templates:
-  - agent-daemonset.yaml
+  - "agent-daemonset.yaml"
 tests:
-  - it: "Demonstrates the use of an override image name"
-    template: agent-daemonset.yaml
+  - it: "image value should be \"ghcr.io/spiffe/spire-server:latest\""
+    template: "agent-daemonset.yaml"
     set:
-      agent.image.name: "mycorp/agent"
       trustdomain: "dev.mycorp.com"
+      agent.image.tag: "latest"
     asserts:
       - containsDocument:
           apiVersion: "apps/v1"
@@ -15,5 +15,4 @@ tests:
           namespace: "NAMESPACE"
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME-agent")].image
-          value: "ghcr.io/mycorp/agent:1.8.0"
-
+          value: "ghcr.io/spiffe/spire-agent:latest"

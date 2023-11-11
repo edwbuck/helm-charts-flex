@@ -1,0 +1,35 @@
+suite: "test images with .image.tag \"latest\" and .agent.image.tag \"1.8.0\""
+templates:
+  - "agent-daemonset.yaml"
+  - "server-statefulset.yaml"
+tests:
+  - it: "agent image value should be \"ghcr.io/spiffe/spire-agent:latest\""
+    template: "agent-daemonset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+      image.tag: "latest"
+      agent.image.tag: "1.8.0"
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "DaemonSet"
+          name: "RELEASE-NAME-agent-daemonset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME-agent")].image
+          value: "ghcr.io/spiffe/spire-agent:1.8.0"
+  - it: "server image value should be \"docker/spiffe/spire-server:latest\""
+    template: "server-statefulset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+      image.tag: "latest"
+      agent.image.tag: "1.8.0"
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "StatefulSet"
+          name: "RELEASE-NAME-server-statefulset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].image"
+          value: "ghcr.io/spiffe/spire-server:latest"

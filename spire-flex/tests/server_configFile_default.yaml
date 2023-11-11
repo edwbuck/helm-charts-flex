@@ -1,0 +1,67 @@
+suite: "test server with .server.configFile (default)"
+templates:
+  - "server-configmap.yaml"
+  - "server-statefulset.yaml"
+tests:
+  - it: "server.configFile property is \"server.conf\""
+    template: "server-configmap.yaml"
+    asserts:
+      - containsDocument:
+          apiVersion: "v1"
+          kind: "ConfigMap"
+          name: "RELEASE-NAME-server-config"
+          namespace: "NAMESPACE"
+      - isNotNull:
+          path: $["data"]["server.conf"]
+
+  - it: "server container args contains \"-config /opt/spire/conf/server/server.conf\""
+    template: "server-statefulset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "StatefulSet"
+          name: "RELEASE-NAME-server-statefulset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].args[0]"
+          value: "-config"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].args[1]"
+          value: "/opt/spire/conf/server/server.conf"
+
+  - it: "server container uses server configMap mounted volume"
+    template: "server-statefulset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "StatefulSet"
+          name: "RELEASE-NAME-server-statefulset"
+          namespace: "NAMESPACE"
+      - isNotNull:
+          path: "spec.template.spec.volumes[?(@.name == \"RELEASE-NAME-server-config\")]"
+      - equal:
+          path: "spec.template.spec.volumes[?(@.name == \"RELEASE-NAME-server-config\")].configMap.name"
+          value: "RELEASE-NAME-server-config"
+      - isNotNull:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].volumeMounts[?(@.name == \"RELEASE-NAME-server-config\")]"
+
+  - it: "server container uses configMap mounted volume at \"/opt/spire/conf/server/\""
+    template: "server-statefulset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "StatefulSet"
+          name: "RELEASE-NAME-server-statefulset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].volumeMounts[?(@.name == \"RELEASE-NAME-server-config\")].mountPath"
+          value: "/opt/spire/conf/server/"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].volumeMounts[?(@.name == \"RELEASE-NAME-server-config\")].readOnly"
+          value: true

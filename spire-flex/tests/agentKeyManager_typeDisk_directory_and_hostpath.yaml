@@ -6,9 +6,9 @@ tests:
   - it: "Should render the correct agent_config file"
     template: agent-configmap.yaml
     set:
-      agent.keyManager.type: disk
+      agent.keyManager.type: "disk"
       agent.keyManager.disk.directory: "/var/lib/spire-agent/"
-      agent.hostpath.keyManagerDir: "/opt/lib/spire-agent/"
+      agent.hostPath.keyManagerDir: "/opt/lib/spire-agent/"
       trustdomain: "dev.mycorp.com"
     asserts:
       - containsDocument:

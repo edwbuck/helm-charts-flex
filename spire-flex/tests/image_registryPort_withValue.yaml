@@ -1,0 +1,33 @@
+suite: "test images with .image.registryPort 3032"
+templates:
+  - "agent-daemonset.yaml"
+  - "server-statefulset.yaml"
+tests:
+  - it: "agent image value should be \"ghcr.io:3032/spiffe/spire-agent:1.8.0\""
+    template: "agent-daemonset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+      image.registryPort: 3032
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "DaemonSet"
+          name: "RELEASE-NAME-agent-daemonset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-agent\")].image"
+          value: "ghcr.io:3032/spiffe/spire-agent:1.8.0"
+  - it: "server image value should be \"ghcr.io:3032/spiffe/spire-server:1.8.0\""
+    template: "server-statefulset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+      image.registryPort: 3032
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "StatefulSet"
+          name: "RELEASE-NAME-server-statefulset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].image"
+          value: "ghcr.io:3032/spiffe/spire-server:1.8.0"

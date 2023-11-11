@@ -1,9 +1,9 @@
-suite: test agent with .image defaults
+suite: "test agent with .agent.image and .image (default)"
 templates:
-  - agent-daemonset.yaml
+  - "agent-daemonset.yaml"
 tests:
-  - it: "Should use the default gcp 1.8.0 image"
-    template: agent-daemonset.yaml
+  - it: "agent image value should be \"ghcr.io/spffe/spire-agent:1.8.0\""
+    template: "agent-daemonset.yaml"
     set:
       trustdomain: "dev.mycorp.com"
     asserts:
@@ -13,5 +13,5 @@ tests:
           name: "RELEASE-NAME-agent-daemonset"
           namespace: "NAMESPACE"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME-agent")].image
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-agent\")].image"
           value: "ghcr.io/spiffe/spire-agent:1.8.0"

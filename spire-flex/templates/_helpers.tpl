@@ -73,3 +73,16 @@ Returns the agent image string.
        (coalesce ((.Values.agent).image).tag (.Values.image).tag .Chart.AppVersion)
    ) | quote }}
 {{- end }}
+
+{{/*
+Returns the server image string.
+*/}}
+{{- define "spire-flex.server.image" -}}
+{{ join "" (list 
+       (coalesce ((.Values.server).image).registry (.Values.image).registry "ghcr.io")
+       (ternary "" ":" (empty (coalesce ((.Values.server).image).registryPort (.Values.image).registryPort)))
+       (coalesce ((.Values.server).image).registryPort (.Values.image).registryPort)
+       "/" (coalesce ((.Values.server).image).name "spiffe/spire-server") ":"
+       (coalesce ((.Values.server).image).tag (.Values.image).tag .Chart.AppVersion)
+   ) | quote }}
+{{- end }}

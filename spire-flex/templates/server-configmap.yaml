@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-server-config
+  namespace: {{ $.Release.Namespace }}
+data:
+  {{- if (.Values.server).configFile }}
+  {{ base .Values.server.configFile -}}: |
+  {{ else }}
+  server.conf: |
+  {{- end }}
+    server {
+    }
+    
+    plugins {
+    }
+

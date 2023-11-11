@@ -1,0 +1,18 @@
+suite: "test server with .server.image.registry \"docker\""
+templates:
+  - "server-statefulset.yaml"
+tests:
+  - it: "image value should be \"docker/spiffe/spire-server:1.8.0\""
+    template: "server-statefulset.yaml"
+    set:
+      trustdomain: "dev.mycorp.com"
+      server.image.registry: "docker"
+    asserts:
+      - containsDocument:
+          apiVersion: "apps/v1"
+          kind: "StatefulSet"
+          name: "RELEASE-NAME-server-statefulset"
+          namespace: "NAMESPACE"
+      - equal:
+          path: "spec.template.spec.containers[?(@.name == \"RELEASE-NAME-server\")].image"
+          value: "docker/spiffe/spire-server:1.8.0"

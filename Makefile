@@ -6,8 +6,8 @@ mkfile_path := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 .PHONY: check
 check: test
 
-template:
-	$(container_cmd) run -ti --rm -v $(mkfile_path):/apps docker.io/alpine/helm:3.11.1 template /apps/spire-flex
+template: 
+	$(container_cmd) run -ti --rm -v $(mkfile_path):/apps docker.io/alpine/helm:3.11.1 template /apps/spire-flex --set trustdomain=example.trustdomain.com
 
 test:
 	$(container_cmd) run -ti --rm -v $(mkfile_path):/apps docker.io/alpine/helm:3.11.1 lint /apps/spire-flex -f /apps/spire-flex/values.yaml
@@ -21,4 +21,7 @@ package:
 
 clean:
 	rm -f spire-flex-*.tgz
+
+tested-keys:
+	@$(container_cmd) run -it --rm -v $(mkfile_path):/apps docker.io/mikefarah/yq:4.35.2 -M eval-all '.tests[].set as $$item ireduce ({}; . * $$item) | keys' $(addprefix /apps/,$(shell ls spire-flex/tests/*.yaml)) | sort
 
